@@ -28,4 +28,4 @@ while True:
         voice.save("voice.mp3")
         playsound("voice.mp3")
 
-        os.remove("voice
+        os.remove("voice")
