@@ -1,31 +1,36 @@
+"""
+pip install googletrans==3.1.0a0
+pip install SpeechRecognition
+pip install PyAudio
+pip install gTTS
+pip install playsound==1.2.2
+pip install wheel
+sudo apt-get install python3-pyaudio
+pip install --global-option='build_ext' --global-option='-I/usr/local/include' --global-option='-L/usr/local/lib' pyaudio
+
+"""
+import googletrans
 import speech_recognition as sr
-from google_trans_new import google_translator
-from gtts import gTTS
-from playsound import playsound
-import os
+import gtts
+import playsound
 
-r = sr.Recognizer()
-translator = google_translator()
+recognizer = sr.Recognizer()
+with sr.Microphone() as source:
+	print("Speak Now")
+	voice = recognizer.listen(source)
+	listen = recognizer.recognize_google(voice,language="en")
+	print(listen)
 
-while True:
-    with sr.Microphone() as source:
-        print("Speak Now!")
-        audio = r.listen(source)
-        try:
-            speech_text = r.recognize_google(audio)
-            print(speech_text)
-            if (speech_text == "exit"):
-                break
-        except sr.UnknownValueError:
-            print("Could not understand")
-        except sr.RequestError:
-            print("Could not request result from google")
+#print(googletrans.LANGUAGES)
 
-        translated_text = translator.translate(speech_text, lang_tgt='fr')
-        print(translated_text)
+#data = "What is your name"
+translator = googletrans.Translator()
+#translate = translator.translate(data,dest="fr")
+translate = translator.translate(listen,dest="fr")
+#print(translate) #to display both the text and language source
+print("The Result:")
+print(translate.text) #to display only the text
 
-        voice = gTTS(translated_text, lang='fr')
-        voice.save("voice.mp3")
-        playsound("voice.mp3")
-
-        os.remove("voice")
+converted_audio =gtts.gTTS(translate.text,lang="fr")
+converted_audio.save("hello.mp3")
+playsound.playsound("hello.mp3")
